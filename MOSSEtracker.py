@@ -148,6 +148,9 @@ class Tracker(object):
 
         sample = get_sample(im, self.pos, self.search_size, self.current_scale_factor, self.spatial_cos_window)
         sample_f = np.fft.fft2(sample, axes=(0, 1))
+        print("sample size: ")
+        print(sample.shape)
+        print(sample_f.shape)
         new_hf_num = repeat_to_third_dim(self.yf) * np.conj(sample_f)
         new_hf_den = np.sum(sample_f * np.conj(sample_f), axis=2)
 
@@ -250,14 +253,11 @@ if __name__ == '__main__':
     tracker = Tracker()
     img_seqs = []
     for i in range(1, 1351):
-        img_seqs.append('./dog1/imgs/img%05d.jpg' % i)
-    init_pos = np.array([112, 139]) + np.array([36, 51]) / 2
-    init_target_size = np.array([36, 51])
+        img_seqs.append('./hiding/%08d.png' % i)
+    init_pos = np.array([94, 110]) + np.array([92, 28]) / 2
+    init_target_size = np.array([92, 28])
     tracker.initial(io.imread(img_seqs[0]), init_pos, init_target_size)
-    image = io.imread(img_seqs[0])
-    cv2.rectangle(image, (139, 112), (190, 148), (0, 255, 0))
-    cv2.imwrite('./00001.jpg', image)
-    for i in range(2, 200):
+    for i in range(2, 300):
         image = io.imread(img_seqs[i])
         tracker.predict(image)
         tracker.update(image)
@@ -266,7 +266,7 @@ if __name__ == '__main__':
         cv2.rectangle(image, (int(pos[1] - target_size[1] / 2), int(pos[0] - target_size[0] / 2)),
                              (int(pos[1] + target_size[1] / 2), int(pos[0] + target_size[0] / 2)),
                              (0, 255, 0))
-        cv2.imwrite('%05d.jpg' % i, image)
+        cv2.imwrite('./output/%08d.jpg' % i, image)
 
     
 
